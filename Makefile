@@ -836,7 +836,11 @@ u-boot.bin: u-boot FORCE
 	$(call if_changed,objcopy)
 	$(call DO_STATIC_RELA,$<,$@,$(CONFIG_SYS_TEXT_BASE))
 	$(BOARD_SIZE_CHECK)
-	@git show HEAD --pretty=format:"%H" | head -n 1 > cur.log
+	@if test -d .git >/dev/null 2>&1; then				\
+		git show HEAD --pretty=format:"%H" | head -n 1 > cur.log; \
+	else								\
+		echo "0000000000000000000000000000000000000000" > cur.log; \
+	fi
 	./tools/add_hash_uboot.sh -f u-boot.bin -m uboot
 
 u-boot-$(CONFIG_TARGET_NAME).bin:   u-boot.bin
